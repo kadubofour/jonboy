@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jon Boy</title>
+<meta name="description" content="A loving, deeply unfair roast of Jon Boy.">
+<meta name="theme-color" content="#FFE600">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS — "Dunce Cap" ============ */
+  :root {
+    --paper: #F4F1E8;
+    --paper-2: #EAE5D6;
+    --card: #FFFFFF;
+    --ink: #121212;
+    --ink-2: #1E1E1E;
+    --hazard: #FFE600;
+    --alarm: #FF3D2E;
+    --muted: #5B5850;
+    --muted-dark: #BDB9AE;
+    --display: "Anton", Impact, sans-serif;
+    --body: "Space Grotesk", system-ui, sans-serif;
+    --mono: "Space Mono", ui-monospace, monospace;
+    --gutter: clamp(16px, 4vw, 64px);
+    --ease-out: cubic-bezier(.2, .8, .2, 1);
+    --spring: cubic-bezier(.34, 1.56, .64, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font: 400 17px/1.55 var(--body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--alarm); outline-offset: 3px; }
+  ::selection { background: var(--hazard); color: var(--ink); }
+
+  /* film grain */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ============ PRELOADER ============ */
+  .loader { position: fixed; inset: 0; z-index: 100; background: var(--hazard); display: grid; place-items: center; transition: clip-path .7s var(--ease-out); clip-path: inset(0 0 0 0); }
+  .loader.done { clip-path: inset(0 0 100% 0); }
+  .loader-inner { text-align: center; padding: 0 16px; }
+  .loader b { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(110px, 22vw, 280px); line-height: .9; }
+  .loader span { font: 700 14px/1.4 var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+  .loader-bar { width: min(420px, 80vw); height: 14px; border: 3px solid var(--ink); margin: 24px auto 16px; }
+  .loader-bar i { display: block; height: 100%; width: 0; background: var(--ink); transition: width .5s var(--ease-out); }
+  html:not(.js) .loader { display: none; }
+
+  /* ============ NAV ============ */
+  .nav { position: relative; z-index: 5; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 26px var(--gutter); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav a.link { text-decoration: none; font-weight: 500; font-size: 18px; position: relative; padding: 10px 0; }
+  .nav a.link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 4px; height: 2px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .3s var(--ease-out); }
+  .nav a.link:hover::after { transform: scaleX(1); transform-origin: left; }
+  .nav .right { justify-self: end; }
+  .logo { font-family: var(--display); font-size: clamp(28px, 4vw, 44px); letter-spacing: .28em; text-transform: uppercase; display: flex; align-items: center; gap: .3em; text-decoration: none; }
+  .logo svg { width: .9em; height: .9em; transition: transform .5s var(--spring); }
+  .logo:hover svg { transform: rotate(-14deg) translateY(-3px); }
+  .snap-chip { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: var(--hazard); border: 2px solid var(--ink); font: 700 14px/1 var(--mono); text-decoration: none; box-shadow: 3px 3px 0 var(--ink); transition: transform .15s, box-shadow .15s; }
+  .snap-chip:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--ink); }
+  .snap-chip:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* ============ HERO ============ */
+  .hero { position: relative; min-height: calc(100svh - 100px); display: grid; grid-template-rows: 1fr auto; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; min-height: 420px; }
+  .marquee { position: absolute; inset: 50% 0 auto 0; transform: translateY(-50%); white-space: nowrap; pointer-events: none; }
+  .marquee-track { display: inline-flex; animation: scroll 30s linear infinite; will-change: transform; }
+  .marquee span { font-family: var(--display); font-size: clamp(96px, 17vw, 260px); line-height: 1; text-transform: uppercase; padding-right: .35em; }
+  .marquee span:nth-child(even) { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  .photo-wrap { position: relative; z-index: 2; transition: transform .6s var(--ease-out); }
+  .hero-photo { width: clamp(230px, 26vw, 400px); aspect-ratio: 1; object-fit: cover; object-position: 50% 30%; border: 3px solid var(--ink); box-shadow: 12px 12px 0 var(--hazard), 12px 12px 0 3px var(--ink); background: var(--ink); }
+  .sticker { position: absolute; z-index: 3; font: 700 13px/1 var(--mono); text-transform: uppercase; background: var(--alarm); color: #fff; padding: 10px 14px; border: 2px solid var(--ink); white-space: nowrap; animation: bob 3.2s ease-in-out infinite; }
+  .sticker.s1 { top: -22px; right: -64px; --r: -8deg; }
+  .sticker.s2 { bottom: -18px; left: -70px; background: var(--hazard); color: var(--ink); --r: 6deg; animation-delay: -1.6s; }
+  .sticker.s3 { top: 44%; right: -104px; background: var(--ink); color: var(--hazard); --r: 3deg; animation-delay: -.8s; }
+  @keyframes bob { 0%, 100% { transform: rotate(var(--r)) translateY(0); } 50% { transform: rotate(var(--r)) translateY(-6px); } }
+
+  .hero-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 24px; padding: 28px var(--gutter) 36px; }
+  .tagline { grid-column: 2; text-align: center; }
+  .tagline p { font-size: clamp(20px, 2.2vw, 30px); font-weight: 500; line-height: 1.25; max-width: 24ch; margin: 0 auto 18px; text-wrap: balance; }
+  .pill { display: inline-block; font: 700 15px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; border: 2px solid var(--ink); padding: 12px 20px; }
+  .hero-foot .copy { font-weight: 500; display: flex; flex-direction: column; gap: 4px; }
+  .hero-foot .copy small { font: 400 13px/1 var(--mono); color: var(--muted); }
+  .hero-foot .cta { justify-self: end; display: flex; gap: 10px; }
+  .btn { font: 500 18px/1 var(--body); display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 56px; padding: 0 26px; border: 2px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background .15s, color .15s, transform .15s, border-color .15s; }
+  .btn:hover { background: var(--ink); color: var(--hazard); }
+  .btn:active { transform: translate(2px, 2px); }
+  .btn.solid { background: var(--ink); color: var(--hazard); }
+  .btn.solid:hover { background: var(--alarm); color: #fff; border-color: var(--alarm); }
+  .btn.hz { background: var(--hazard); color: var(--ink); }
+  .btn.hz:hover { background: var(--ink); color: var(--hazard); }
+  .btn:disabled { cursor: progress; opacity: .8; }
+
+  /* ============ TAPE ============ */
+  .tape { background: var(--hazard); border-block: 3px solid var(--ink); overflow: hidden; white-space: nowrap; transform: rotate(-1.5deg); margin: 30px -20px; position: relative; z-index: 3; }
+  .tape.alt { background: var(--ink); color: var(--hazard); border-color: var(--hazard); transform: rotate(1.2deg); margin-top: -18px; }
+  .tape .marquee-track { animation-duration: 22s; animation-direction: reverse; }
+  .tape.alt .marquee-track { animation-direction: normal; }
+  .tape span { font: 700 18px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; padding: 16px 0; display: inline-flex; align-items: center; gap: 22px; padding-right: 22px; }
+  .tape svg { width: 18px; height: 18px; flex: none; }
+
+  /* ============ SECTIONS ============ */
+  section { padding: clamp(72px, 10vw, 140px) var(--gutter); }
+  .label { font: 700 13px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--alarm); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+  .label::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+  h2 { font-family: var(--display); font-weight: 400; font-size: clamp(52px, 8.5vw, 128px); line-height: .92; text-transform: uppercase; text-wrap: balance; }
+  h2 .hl { background: var(--hazard); padding: 0 .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  h2 .out { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+
+  /* reveal */
+  .js .reveal { opacity: 0; transform: translateY(36px); transition: opacity .8s var(--ease-out), transform .8s var(--ease-out); transition-delay: var(--d, 0s); }
+  .js .reveal.in { opacity: 1; transform: none; }
+
+  /* ============ DICTIONARY ============ */
+  .dict { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .dict .lead { margin-top: 24px; color: var(--muted); max-width: 44ch; }
+  .entry { position: relative; border: 3px solid var(--ink); background: var(--card); padding: clamp(24px, 3vw, 44px); box-shadow: 12px 12px 0 var(--ink); }
+  .entry .stamp { position: absolute; top: -20px; right: -14px; font: 700 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; color: var(--alarm); border: 3px solid var(--alarm); padding: 10px 12px; background: var(--card); transform: rotate(9deg); }
+  .entry h3 { font-family: var(--display); font-weight: 400; font-size: clamp(64px, 8vw, 112px); line-height: 1; }
+  .entry .pron { font-family: var(--mono); color: var(--muted); margin: 6px 0 22px; }
+  .entry ol { padding-left: 1.3em; display: grid; gap: 14px; }
+  .entry li::marker { font-family: var(--mono); font-weight: 700; }
+  .entry em { color: var(--muted); }
+  .entry .syn { margin-top: 24px; padding-top: 18px; border-top: 2px dashed var(--ink); font-family: var(--mono); font-size: 14px; line-height: 1.7; }
+
+  /* ============ EXHIBITS ============ */
+  .exhibits-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 48px; }
+  .exhibits-head p { max-width: 36ch; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
+  .card { grid-column: span 4; border: 3px solid var(--ink); background: var(--card); display: flex; flex-direction: column; transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out); }
+  .card:hover { transform: translate(-5px, -5px); box-shadow: 10px 10px 0 var(--hazard), 10px 10px 0 3px var(--ink); }
+  .card.wide { grid-column: span 8; }
+  .card .ph { position: relative; aspect-ratio: 4/5; overflow: hidden; border-bottom: 3px solid var(--ink); background: var(--ink); }
+  .card.wide .ph { aspect-ratio: 16/10; }
+  .card img, .card video { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease-out), filter .4s; }
+  .card:hover img { transform: scale(1.05); }
+  .card .open { all: unset; position: absolute; inset: 0; cursor: zoom-in; }
+  .card .open:focus-visible { outline: 3px solid var(--alarm); outline-offset: -6px; }
+  .card .tag { position: absolute; z-index: 1; top: 12px; left: 12px; background: var(--hazard); font: 700 12px/1 var(--mono); padding: 8px 10px; border: 2px solid var(--ink); text-transform: uppercase; pointer-events: none; }
+  .card .zoom { position: absolute; z-index: 1; right: 12px; bottom: 12px; width: 44px; height: 44px; display: grid; place-items: center; background: var(--ink); color: var(--hazard); border: 2px solid var(--hazard); opacity: 0; transform: translateY(8px); transition: opacity .25s, transform .25s var(--ease-out); pointer-events: none; }
+  .card:hover .zoom, .card:focus-within .zoom { opacity: 1; transform: none; }
+  .card .cap { padding: 18px 20px 22px; }
+  .card .cap strong { display: block; font-family: var(--display); font-weight: 400; font-size: 27px; text-transform: uppercase; line-height: 1.05; margin-bottom: 6px; }
+  .card .cap span { color: var(--muted); font-size: 15px; }
+  .card .verdict-chip { display: inline-block; margin-top: 12px; font: 700 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--alarm); border: 2px solid var(--alarm); padding: 6px 8px; }
+
+  /* ============ LIGHTBOX ============ */
+  dialog.lb { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
+  dialog.lb::backdrop { background: rgba(18, 18, 18, .92); }
+  .lb-inner { height: 100%; display: grid; grid-template-rows: auto 1fr auto; padding: 18px var(--gutter); color: var(--paper); }
+  .lb-top { display: flex; justify-content: space-between; align-items: center; font: 700 14px/1 var(--mono); text-transform: uppercase; letter-spacing: .12em; }
+  .lb-top .count { color: var(--hazard); }
+  .lb-stage { display: grid; place-items: center; min-height: 0; padding: 16px 0; }
+  .lb-stage img { max-height: 100%; max-width: 100%; object-fit: contain; border: 3px solid var(--hazard); animation: pop .35s var(--spring); }
+  @keyframes pop { from { transform: scale(.94); opacity: 0; } }
+  .lb-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .lb-foot strong { font-family: var(--display); font-weight: 400; font-size: clamp(22px, 3vw, 34px); text-transform: uppercase; }
+  .lb-foot p { color: var(--muted-dark); font-size: 15px; }
+  .icon-btn { width: 52px; height: 52px; display: grid; place-items: center; background: var(--hazard); color: var(--ink); border: 2px solid var(--hazard); cursor: pointer; transition: background .15s, color .15s; flex: none; }
+  .icon-btn:hover { background: transparent; color: var(--hazard); }
+  .lb-nav { display: flex; gap: 10px; }
+
+  /* ============ STUDY SESSION ============ */
+  .study-head { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(28px, 5vw, 80px); align-items: end; margin-bottom: 48px; }
+  .study-head .lead { color: var(--muted); max-width: 42ch; margin-top: 22px; }
+  .timer { background: var(--ink); color: var(--paper); border: 3px solid var(--ink); box-shadow: 12px 12px 0 var(--hazard), 12px 12px 0 3px var(--ink); }
+  .timer-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 2px solid #333; font: 700 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted-dark); }
+  .rec { display: inline-flex; align-items: center; gap: 8px; color: var(--alarm); }
+  .rec::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--alarm); animation: blink 1.2s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .timer-rows { display: grid; grid-template-columns: 1fr 1fr; }
+  .timer-row { padding: 18px; }
+  .timer-row + .timer-row { border-left: 2px solid #333; }
+  .timer-row small { display: block; font: 700 11px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted-dark); margin-bottom: 8px; }
+  .timer-row b { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 4vw, 54px); line-height: 1; font-variant-numeric: tabular-nums; }
+  .timer-row.asleep b { color: var(--hazard); }
+  .timer-foot { padding: 12px 18px; border-top: 2px solid #333; font: 400 13px/1.4 var(--mono); color: var(--muted-dark); }
+  .card.cam .tag { z-index: 3; background: var(--ink); color: var(--hazard); border-color: var(--hazard); }
+  .card.cam .ph::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 1px, transparent 1px 3px); }
+  .card.v7 { grid-column: span 7; }
+  .card.v5 { grid-column: span 5; }
+  .card.v7 .ph, .card.v5 .ph { aspect-ratio: auto; height: clamp(360px, 42vw, 560px); }
+  .zzz { position: absolute; z-index: 2; right: 14px; top: 10px; font-family: var(--display); color: var(--hazard); text-shadow: 2px 2px 0 var(--ink); pointer-events: none; }
+  .zzz span { position: absolute; right: 0; animation: float 3s ease-in infinite; opacity: 0; }
+  .zzz span:nth-child(1) { font-size: 22px; }
+  .zzz span:nth-child(2) { font-size: 30px; animation-delay: 1s; }
+  .zzz span:nth-child(3) { font-size: 40px; animation-delay: 2s; }
+  @keyframes float { 0% { transform: translate(0, 60px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(-30px, -10px); opacity: 0; } }
+
+  /* ============ STATS ============ */
+  .stats { background: var(--ink); color: var(--paper); position: relative; }
+  .stats h2 { color: var(--hazard); margin-bottom: 56px; }
+  .stats h2 .out { -webkit-text-stroke-color: var(--hazard); }
+  .stats .label { color: var(--hazard); }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 2px solid var(--paper); }
+  .stat { padding: 30px 20px 30px 0; border-right: 2px solid #333; }
+  .stat + .stat { padding-left: 24px; }
+  .stat:last-child { border-right: 0; }
+  .stat b { display: block; font-family: var(--display); font-weight: 400; font-size: clamp(60px, 6.5vw, 104px); line-height: 1; color: var(--hazard); font-variant-numeric: tabular-nums; }
+  .stat span { font-family: var(--mono); font-size: 14px; color: var(--muted-dark); }
+
+  /* ============ REVIEWS ============ */
+  .reviews-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 48px; }
+  .review { background: var(--card); border: 3px solid var(--ink); padding: 26px 24px; display: flex; flex-direction: column; gap: 18px; transition: transform .3s var(--spring); }
+  .review:nth-child(odd) { transform: rotate(-1.2deg); }
+  .review:nth-child(even) { transform: rotate(1deg); }
+  .review:hover { transform: rotate(0) translateY(-6px); }
+  .stars { display: flex; gap: 4px; }
+  .stars svg { width: 20px; height: 20px; }
+  .review blockquote { font-size: 19px; font-weight: 500; line-height: 1.35; flex: 1; }
+  .review cite { font: 700 13px/1.3 var(--mono); font-style: normal; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .review.hot { background: var(--hazard); }
+
+  /* ============ SNAP / LICENCE ============ */
+  .snap { background: var(--paper-2); border-block: 3px solid var(--ink); display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 100px); align-items: center; overflow: hidden; }
+  .snap .lead { color: var(--muted); max-width: 40ch; margin: 24px 0 32px; }
+  .snap-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .licence-wrap { perspective: 1200px; display: grid; place-items: center; }
+  .licence { width: min(520px, 100%); background: var(--hazard); border: 3px solid var(--ink); box-shadow: 16px 16px 0 var(--ink); transform: rotate(-4deg); transition: transform .6s var(--ease-out); transform-style: preserve-3d; position: relative; }
+  .licence-head { background: var(--ink); color: var(--hazard); display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; font: 700 12px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+  .licence-body { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 20px; }
+  .licence-photo { aspect-ratio: 3/4; border: 3px solid var(--ink); overflow: hidden; background: var(--ink); }
+  .licence-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; filter: grayscale(1) contrast(1.15); }
+  .fields { display: grid; gap: 10px; align-content: start; }
+  .field small { display: block; font: 700 10px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; opacity: .7; margin-bottom: 3px; }
+  .field div { font-family: var(--display); font-size: 24px; line-height: 1; text-transform: uppercase; }
+  .field.handle div { font-family: var(--mono); font-weight: 700; font-size: 22px; text-transform: none; background: var(--ink); color: var(--hazard); display: inline-block; padding: 6px 8px; }
+  .licence-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 20px 18px; }
+  .barcode { height: 40px; flex: 1; max-width: 240px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 7px, transparent 7px 9px, var(--ink) 9px 10px, transparent 10px 13px); }
+  .licence .void { position: absolute; right: 22px; top: 70px; font: 700 16px/1 var(--mono); letter-spacing: .1em; color: var(--alarm); border: 3px solid var(--alarm); padding: 8px 10px; transform: rotate(-14deg); text-transform: uppercase; background: rgba(255,255,255,.35); }
+  .toast { position: fixed; left: 50%; bottom: 28px; z-index: 95; transform: translate(-50%, 140%); background: var(--ink); color: var(--hazard); border: 2px solid var(--hazard); padding: 14px 20px; font: 700 14px/1 var(--mono); transition: transform .35s var(--spring), visibility .35s; visibility: hidden; }
+  .toast.show { transform: translate(-50%, 0); visibility: visible; }
+
+  /* ============ IQ TEST ============ */
+  .iq { text-align: center; }
+  .iq .label { justify-content: center; }
+  .iq h2 { margin-bottom: 20px; }
+  .iq p.sub { color: var(--muted); max-width: 44ch; margin: 0 auto 40px; }
+  .gauge { max-width: 760px; margin: 0 auto; }
+  .meter { border: 3px solid var(--ink); height: 60px; background: var(--card); position: relative; overflow: hidden; }
+  .meter i { position: absolute; inset: 0 auto 0 0; width: 100%; transform-origin: left; transform: scaleX(0); background: repeating-linear-gradient(-45deg, var(--hazard) 0 18px, var(--ink) 18px 36px); transition: transform 1.6s var(--ease-out); }
+  .scale { display: flex; justify-content: space-between; font: 400 12px/1 var(--mono); color: var(--muted); margin-top: 10px; }
+  .readout { font-family: var(--display); font-size: clamp(96px, 14vw, 200px); line-height: 1; margin-top: 24px; font-variant-numeric: tabular-nums; }
+  .verdict { font-family: var(--mono); font-weight: 700; color: var(--alarm); min-height: 1.6em; margin: 10px 0 30px; text-transform: uppercase; letter-spacing: .08em; }
+
+  /* ============ FOOTER ============ */
+  footer { background: var(--ink); color: var(--paper); padding: 64px var(--gutter) 28px; overflow: hidden; }
+  .foot-top { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+  .foot-top p { max-width: 36ch; color: var(--muted-dark); }
+  .wordmark { font-family: var(--display); font-size: clamp(90px, 25vw, 400px); line-height: .8; text-transform: uppercase; color: var(--hazard); letter-spacing: -.01em; margin: 40px 0 28px; white-space: nowrap; }
+  .foot-bot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font: 400 13px/1.4 var(--mono); color: var(--muted-dark); border-top: 1px solid #333; padding-top: 20px; }
+  footer .snap-chip { color: var(--ink); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1000px) {
+    .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+    .snap { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    .dict, .study-head { grid-template-columns: 1fr; }
+    .card.v7, .card.v5 { grid-column: span 12; }
+    .card, .card.wide { grid-column: span 6; }
+    .card.wide .ph { aspect-ratio: 4/5; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat, .stat + .stat { padding: 26px 16px 26px 0; border-bottom: 2px solid #333; }
+    .stat:nth-child(even) { border-right: 0; padding-left: 16px; }
+    .sticker.s3 { display: none; }
+  }
+  @media (max-width: 640px) {
+    body { font-size: 16px; }
+    .nav { grid-template-columns: 1fr auto; row-gap: 8px; }
+    .nav .logo { grid-column: 1 / -1; grid-row: 1; justify-self: center; }
+    .nav-links { gap: 18px; }
+    .hero-foot { grid-template-columns: 1fr; text-align: center; }
+    .tagline { grid-column: 1; }
+    .hero-foot .copy { order: 3; align-items: center; }
+    .hero-foot .cta { justify-self: center; }
+    .sticker.s1 { right: -12px; }
+    .sticker.s2 { left: -12px; }
+    .card, .card.wide { grid-column: span 12; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .licence-body { grid-template-columns: 110px 1fr; gap: 14px; padding: 14px; }
+    .field div { font-size: 19px; }
+    .field.handle div { font-size: 17px; }
+    .licence .void { display: none; }
+    .lb-foot { flex-wrap: wrap; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+    html { scroll-behavior: auto; }
+    .js .reveal { opacity: 1; transform: none; }
+  }
+</style>
+<script>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <b id="loadNum">0%</b>
+    <div class="loader-bar"><i id="loadBar"></i></div>
+    <span id="loadMsg">Loading Jon's brain…</span>
+  </div>
+</div>
+
+<header class="nav">
+  <nav class="nav-links" aria-label="Sections">
+    <a class="link" href="#definition">About</a>
+    <a class="link" href="#exhibits">Evidence</a>
+  </nav>
+  <a class="logo" href="#top" aria-label="Jon Boy, back to top">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 21 22H3Z" fill="var(--hazard)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M7 13h10" stroke="var(--ink)" stroke-width="2"/></svg>
+    Jon Boy
+  </a>
+  <a class="snap-chip right" href="#study">
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" fill="currentColor"/></svg>
+    Study Session
+  </a>
+</header>
+
+<main id="top">
+  <section class="hero" style="padding:0" aria-label="Intro">
+    <div class="stage">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>Certified Jon</span><span>Jon Behaviour</span><span>Certified Jon</span><span>Jon Behaviour</span>
+          <span>Certified Jon</span><span>Jon Behaviour</span><span>Certified Jon</span><span>Jon Behaviour</span>
+        </div>
+      </div>
+      <div class="photo-wrap" id="photoWrap">
+        <img class="hero-photo" src="media/fear-no.jpg" alt="Jon Boy taking a mirror selfie in a FEAR NO shirt" width="400" height="400" fetchpriority="high">
+        <div class="sticker s1">Fear no… what?</div>
+        <div class="sticker s2">Loading brain…</div>
+        <div class="sticker s3">Battery 3%</div>
+      </div>
+    </div>
+
+    <div class="hero-foot">
+      <div class="copy">Jon Boy® 2026 <small>est. the day common sense left</small></div>
+      <div class="tagline">
+        <p>Exceptional Jon behaviour, delivered daily across Accra and wherever his GPS thinks he is.</p>
+        <span class="pill">IQ starting from 12</span>
+      </div>
+      <div class="cta">
+        <a class="btn" href="#exhibits">The Evidence
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><g fill="currentColor"><rect x="2" y="2" width="4" height="4"/><rect x="12" y="2" width="4" height="4"/><rect x="2" y="12" width="4" height="4"/><rect x="12" y="12" width="4" height="4"/></g></svg>
+        </a>
+        <a class="btn solid" href="#iq" aria-label="Jump to the IQ test">
+          <svg width="22" height="14" viewBox="0 0 22 14" aria-hidden="true"><rect width="22" height="3" fill="currentColor"/><rect y="8" width="13" height="3" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="tape" aria-hidden="true">
+    <div class="marquee-track" id="tape1"></div>
+  </div>
+
+  <section id="definition" class="dict">
+    <div class="reveal">
+      <span class="label">01 — Etymology</span>
+      <h2>Named after the word. <span class="out">Or the word after him.</span></h2>
+      <p class="lead">Scholars still argue whether "jon" meant dumb before Jon Boy was born. Most agree he's the reason it stuck.</p>
+    </div>
+    <article class="entry reveal" style="--d:.12s" aria-label="Dictionary entry for jon">
+      <span class="stamp">Peer reviewed</span>
+      <h3>jon</h3>
+      <div class="pron">/dʒɒn/ · adjective · informal</div>
+      <ol>
+        <li>Dumb, clueless, operating on 3% battery. <em>"Don't be so jon, the door says PULL."</em></li>
+        <li>Having total confidence and zero information. <em>"He wore a FEAR NO shirt. Fear no what? Very jon."</em></li>
+        <li>(of a person) Jon Boy. <em>See also: "I'm studying" (asleep).</em></li>
+      </ol>
+      <div class="syn">SYNONYMS: jon-ish, jon-like, "bro really thought…"<br>ANTONYMS: smart, awake, literally anyone else</div>
+    </article>
+  </section>
+
+  <section id="exhibits" style="padding-top:0">
+    <div class="exhibits-head reveal">
+      <div>
+        <span class="label">02 — The Evidence</span>
+        <h2>Exhibits <span class="hl">A–G</span></h2>
+      </div>
+      <p>Everything below was collected from his own Snapchat. He posted all of it. On purpose. Click any exhibit to inspect.</p>
+    </div>
+
+    <div class="grid" id="grid">
+      <article class="card wide reveal" data-title="Camera shy (with a camera)" data-text="Hides from the photo while holding a phone at the photo. Asked for 'candid'. Got this.">
+        <div class="ph"><span class="tag">Exhibit A</span><img src="media/jeep.jpg" alt="Jon hiding his face from the camera while holding his phone" loading="lazy"><button class="open" aria-label="Enlarge Exhibit A"></button><span class="zoom" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M10 7v6M7 10h6"/></svg></span></div>
+        <div class="cap"><strong>Camera shy (with a camera)</strong><span>Hides from the photo while holding a phone at the photo. Asked for "candid". Got this.</span><br><span class="verdict-chip">Verdict: jon</span></div>
+      </article>
+      <article class="card reveal" style="--d:.1s" data-title="His sharpest work" data-text="Sharpest photo Jon has ever taken. Sharpest thing about him, too.">
+        <div class="ph"><span class="tag">Exhibit B</span><img src="media/blur.jpg" alt="Very blurry mirror selfie" loading="lazy"><button class="open" aria-label="Enlarge Exhibit B"></button><span class="zoom" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M10 7v6M7 10h6"/></svg></span></div>
+        <div class="cap"><strong>His sharpest work</strong><span>Sharpest photo Jon has ever taken. Sharpest thing about him, too.</span></div>
+      </article>
+      <article class="card reveal" data-title="Socks & slides" data-text="Brave. Wrong. But brave.">
+        <div class="ph"><span class="tag">Exhibit C</span><img src="media/slides.jpg" alt="Looking down at socks worn with Adidas slides" loading="lazy"><button class="open" aria-label="Enlarge Exhibit C"></button><span class="zoom" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M10 7v6M7 10h6"/></svg></span></div>
+        <div class="cap"><strong>Socks &amp; slides</strong><span>Brave. Wrong. But brave.</span></div>
+      </article>
+      <article class="card reveal" style="--d:.08s" data-title="The mall mission" data-text="Drove to Accra Mall for 'one thing'. Forgot the thing. Stayed two hours.">
+        <div class="ph"><span class="tag">Exhibit D</span><img src="media/mall.jpg" alt="Accra Mall at night from inside a car" loading="lazy"><button class="open" aria-label="Enlarge Exhibit D"></button><span class="zoom" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M10 7v6M7 10h6"/></svg></span></div>
+        <div class="cap"><strong>The mall mission</strong><span>Drove to Accra Mall for "one thing". Forgot the thing. Stayed two hours.</span></div>
+      </article>
+      <article class="card reveal" style="--d:.16s" data-title="Came back with bread" data-text="The thing was not bread. It was never bread.">
+        <div class="ph"><span class="tag">Exhibit E</span><img src="media/bakery.jpg" alt="Shopping trolley full of bread in a supermarket bakery" loading="lazy"><button class="open" aria-label="Enlarge Exhibit E"></button><span class="zoom" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M10 7v6M7 10h6"/></svg></span></div>
+        <div class="cap"><strong>Came back with bread</strong><span>The thing was not bread. It was never bread.</span><br><span class="verdict-chip">Verdict: very jon</span></div>
+      </article>
+      <article class="card reveal" data-title="Where's the car?" data-text="20 minutes searching. It's the red one. It was always the red one.">
+        <div class="ph"><span class="tag">Exhibit F</span><img src="media/parking.jpg" alt="Car park at night under floodlights" loading="lazy"><button class="open" aria-label="Enlarge Exhibit F"></button><span class="zoom" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M10 7v6M7 10h6"/></svg></span></div>
+        <div class="cap"><strong>Where's the car?</strong><span>20 minutes searching. It's the red one. It was always the red one.</span></div>
+      </article>
+      <article class="card wide reveal" style="--d:.1s">
+        <div class="ph"><span class="tag">Exhibit G · Footage</span><video src="media/footage.mp4" controls muted playsinline loop preload="metadata" aria-label="Snapchat video of Jon"></video></div>
+        <div class="cap"><strong>Raw footage</strong><span>No context needed. None was ever available.</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="study" aria-labelledby="study-h" style="padding-top:0">
+    <div class="study-head">
+      <div class="reveal">
+        <span class="label">03 — The Study Session</span>
+        <h2 id="study-h">"I'm <span class="hl">studying</span>"</h2>
+        <p class="lead">Direct quote, delivered with full confidence minutes before the footage below. Boarding school surveillance recovered the following logs. He insists he was "reading with his eyes closed".</p>
+      </div>
+      <div class="timer reveal" style="--d:.12s" role="group" aria-label="Study tracker">
+        <div class="timer-head"><span>Jon study tracker v1.0</span><span class="rec">Rec</span></div>
+        <div class="timer-rows">
+          <div class="timer-row"><small>Time studying</small><b>00:00:00</b></div>
+          <div class="timer-row asleep"><small>Time asleep</small><b id="sleepClock">01:32:23</b></div>
+        </div>
+        <div class="timer-foot">Pages read: 0 · Pages drooled on: 3 · Knowledge absorbed: via face</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card cam v7 reveal">
+        <div class="ph"><span class="tag">Cam 01 · 16 Feb · 01:32 AM</span><video src="media/study-1.mp4" controls muted playsinline loop preload="metadata" aria-label="Video of Jon asleep during a late night study session"></video></div>
+        <div class="cap"><strong>"Just resting my eyes"</strong><span>01:32 AM. Textbook open. Eyes not. Pages turned: 0.</span><br><span class="verdict-chip">Verdict: asleep</span></div>
+      </article>
+      <article class="card cam v5 reveal" style="--d:.1s">
+        <div class="ph"><span class="tag">Cam 01 · 01:33 AM</span><video src="media/study-2.mp4" controls muted playsinline loop preload="metadata" aria-label="Second video of Jon still asleep one minute later"></video></div>
+        <div class="cap"><strong>One minute later</strong><span>Still "reading". Now reading in 4K.</span></div>
+      </article>
+      <article class="card cam reveal" data-title="Downloading knowledge…" data-text="11:00 PM, 5 March. Absorbing the textbook directly through his face. Transfer speed: 0 KB/s.">
+        <div class="ph"><span class="tag">Cam 02 · 5 Mar · 11:00 PM</span><img src="media/sleep-1.jpg" alt="Close-up of Jon asleep with his mouth open" loading="lazy"><div class="zzz" aria-hidden="true"><span>z</span><span>z</span><span>Z</span></div><button class="open" aria-label="Enlarge Cam 02 photo 1"></button></div>
+        <div class="cap"><strong>Downloading knowledge…</strong><span>Absorbing the textbook directly through his face. Transfer speed: 0 KB/s.</span></div>
+      </article>
+      <article class="card cam reveal" style="--d:.08s" data-title="Mouth open for answers" data-text="11:00 PM. Waiting for the answers to fall in. Exam is tomorrow.">
+        <div class="ph"><span class="tag">Cam 02 · 11:00 PM</span><img src="media/sleep-2.jpg" alt="Jon asleep sideways on his pillow, mouth open" loading="lazy"><div class="zzz" aria-hidden="true"><span>z</span><span>z</span><span>Z</span></div><button class="open" aria-label="Enlarge Cam 02 photo 2"></button></div>
+        <div class="cap"><strong>Mouth open for answers</strong><span>Waiting for the answers to fall in. Exam is tomorrow.</span></div>
+      </article>
+      <article class="card cam reveal" style="--d:.16s" data-title="Chapter Zzz" data-text="Two seconds later. Now deep into Chapter Zzz. Would recommend, he says (in his sleep).">
+        <div class="ph"><span class="tag">Cam 02 · +2 sec</span><img src="media/sleep-3.jpg" alt="Jon still asleep two seconds later" loading="lazy"><div class="zzz" aria-hidden="true"><span>z</span><span>z</span><span>Z</span></div><button class="open" aria-label="Enlarge Cam 02 photo 3"></button></div>
+        <div class="cap"><strong>Chapter Zzz</strong><span>Two seconds later. Deep into the chapter. Would recommend, he says (in his sleep).</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="stats" aria-labelledby="stats-h">
+    <span class="label">04 — By the numbers</span>
+    <h2 id="stats-h" class="reveal">Jon, <span class="out">quantified</span></h2>
+    <div class="stat-grid">
+      <div class="stat reveal"><b data-count="47">47</b><span>mirror selfies, same bathroom</span></div>
+      <div class="stat reveal" style="--d:.08s"><b data-count="0">0</b><span>sentences finished by the FEAR NO shirt</span></div>
+      <div class="stat reveal" style="--d:.16s"><b data-count="3" data-suffix="%">3%</b><span>brain battery, peak hours</span></div>
+      <div class="stat reveal" style="--d:.24s"><b>∞</b><span>confidence. unexplained.</span></div>
+    </div>
+  </section>
+
+  <div class="tape alt" aria-hidden="true">
+    <div class="marquee-track" id="tape2"></div>
+  </div>
+
+  <section aria-labelledby="rev-h">
+    <span class="label">05 — Reviews</span>
+    <h2 id="rev-h" class="reveal">Rated <span class="hl">1 star</span> by everyone</h2>
+    <div class="reviews-grid">
+      <figure class="review reveal" data-stars="1">
+        <div class="stars"></div>
+        <blockquote>"Recalculating. Recalculating. Recalculating. I give up."</blockquote>
+        <cite>— Google Maps</cite>
+      </figure>
+      <figure class="review hot reveal" style="--d:.08s" data-stars="1">
+        <div class="stars"></div>
+        <blockquote>"He looks at me 40 times a day and still gets it wrong."</blockquote>
+        <cite>— The bathroom mirror</cite>
+      </figure>
+      <figure class="review reveal" style="--d:.16s" data-stars="2">
+        <div class="stars"></div>
+        <blockquote>"I said FEAR NO. He never told me what. I've been anxious since."</blockquote>
+        <cite>— The FEAR NO shirt</cite>
+      </figure>
+      <figure class="review reveal" style="--d:.24s" data-stars="1">
+        <div class="stars"></div>
+        <blockquote>"He came in for one thing. Left with four loaves. We didn't even have a sale."</blockquote>
+        <cite>— Bakery aisle, Accra</cite>
+      </figure>
+    </div>
+  </section>
+
+  <section id="snap" class="snap" aria-labelledby="snap-h">
+    <div class="reveal">
+      <span class="label">06 — Credentials</span>
+      <h2 id="snap-h">Licensed<br><span class="out">to be</span> jon.</h2>
+      <p class="lead">Officially licensed by the Jon Boy Enforcement Agency. Card holder is permitted to be jon in all public places, study halls included. Mirror selfies included.</p>
+      <div class="snap-actions">
+        <button class="btn solid" id="renew" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>
+          Apply to revoke licence
+        </button>
+      </div>
+    </div>
+    <div class="licence-wrap reveal" style="--d:.15s">
+      <div class="licence" id="licence" role="img" aria-label="Official Jon licence for Jon Boy, class: certified jon, specialty: sleep studies, IQ 12, expires never">
+        <div class="licence-head"><span>Official Jon Licence</span><span>No. 000012</span></div>
+        <div class="licence-body">
+          <div class="licence-photo"><img src="media/jeep.jpg" alt="" loading="lazy"></div>
+          <div class="fields">
+            <div class="field"><small>Name</small><div>Jon Boy</div></div>
+            <div class="field handle"><small>Specialty</small><div>Sleep studies</div></div>
+            <div class="field"><small>Class</small><div>Certified Jon</div></div>
+            <div class="field"><small>IQ · Expires</small><div>12 · Never</div></div>
+          </div>
+        </div>
+        <div class="licence-foot">
+          <div class="barcode"></div>
+          <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 21 22H3Z" fill="var(--ink)"/><path d="M7 13h10" stroke="var(--hazard)" stroke-width="2"/></svg>
+        </div>
+        <span class="void">Void if smart</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="iq" class="iq">
+    <span class="label">07 — Official testing</span>
+    <h2 class="reveal">Run the <span class="hl">Jon-o-meter</span></h2>
+    <p class="sub">Our lab-grade instrument measures Jon's IQ in real time. Results are final and legally binding in the group chat.</p>
+    <div class="gauge">
+      <div class="meter" aria-hidden="true"><i id="bar"></i></div>
+      <div class="scale" aria-hidden="true"><span>0 · Jon</span><span>50</span><span>100 · Average</span><span>150</span><span>200 · Not Jon</span></div>
+    </div>
+    <div class="readout" id="readout" aria-live="polite">—</div>
+    <div class="verdict" id="verdict" aria-live="polite"></div>
+    <button class="btn solid" id="test" type="button">Measure Jon</button>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-top">
+    <p>Made with love (mostly) by the people who have to hang out with him. No Jons were harmed. Some were mildly humbled.</p>
+    <a class="snap-chip" href="#study">Zzz · Study Session</a>
+  </div>
+  <div class="wordmark" aria-hidden="true">Jon Boy</div>
+  <div class="foot-bot"><span>Jon Boy® 2026 — all rights reserved, no brain cells reserved</span><a href="#top">Back to top ↑</a></div>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="Exhibit viewer">
+  <div class="lb-inner">
+    <div class="lb-top"><span class="count" id="lbCount">Exhibit A</span>
+      <button class="icon-btn" id="lbClose" aria-label="Close viewer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 5l14 14M19 5 5 19"/></svg></button>
+    </div>
+    <div class="lb-stage"><img id="lbImg" src="" alt=""></div>
+    <div class="lb-foot">
+      <div><strong id="lbTitle"></strong><p id="lbText"></p></div>
+      <div class="lb-nav">
+        <button class="icon-btn" id="lbPrev" aria-label="Previous exhibit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="icon-btn" id="lbNext" aria-label="Next exhibit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const warn = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 23 21H1Z" fill="currentColor"/><path d="M12 9v5M12 17v.5" stroke="var(--hazard)" stroke-width="2.4" stroke-linecap="round"/></svg>';
+  const tapeInvert = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 23 21H1Z" fill="currentColor"/><path d="M12 9v5M12 17v.5" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/></svg>';
+
+  /* ---- tapes ---- */
+  const fill = (el, items, icon) => {
+    const run = items.map(t => `${icon}${t}`).join("");
+    el.innerHTML = `<span>${run}</span><span>${run}</span>`;
+  };
+  fill($("#tape1"), ["Caution: Jon in the area", "Do not ask him for directions", "Do not let him hold the aux", "Do not wake him, he's \"studying\""], warn);
+  fill($("#tape2"), ["1 star", "Would not recommend", "Still looking for the red car", "Fear no… what?"], tapeInvert);
+
+  /* ---- preloader ---- */
+  const loader = $("#loader");
+  let seen = false;
+  try { seen = sessionStorage.getItem("jonLoaded") === "1"; } catch (e) {}
+  if (reduce || seen) { loader.remove(); }
+  else {
+    const num = $("#loadNum"), bar = $("#loadBar"), msg = $("#loadMsg");
+    const steps = [[1, "Loading Jon's brain…"], [2, "Loading Jon's brain…"], [3, "Still loading…"], [3, "Hmm. That's all of it."]];
+    let k = 0;
+    const next = () => {
+      if (k < steps.length) {
+        const [v, m] = steps[k++]; num.textContent = v + "%"; bar.style.width = v + "%"; msg.textContent = m;
+        setTimeout(next, k === steps.length ? 700 : 380);
+      } else {
+        loader.classList.add("done");
+        setTimeout(() => loader.remove(), 800);
+        try { sessionStorage.setItem("jonLoaded", "1"); } catch (e) {}
+      }
+    };
+    setTimeout(next, 250);
+  }
+
+  /* ---- reveal + counters ---- */
+  const countUp = el => {
+    const target = +el.dataset.count, suf = el.dataset.suffix || "";
+    if (reduce || !target) return;
+    const start = performance.now(), dur = 1200;
+    const tick = now => { const t = Math.min((now - start) / dur, 1); el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3))) + suf; if (t < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in");
+    e.target.querySelectorAll("[data-count]").forEach(countUp);
+    io.unobserve(e.target);
+  }), { threshold: .15, rootMargin: "0px 0px -40px 0px" });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+  /* ---- stars ---- */
+  const star = on => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 7 7 .6-5.3 4.7 1.6 7.2L12 17.8 5.7 21.5l1.6-7.2L2 9.6 9 9z" fill="${on ? "var(--alarm)" : "none"}" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+  document.querySelectorAll(".review").forEach(r => {
+    const n = +r.dataset.stars, s = r.querySelector(".stars");
+    s.innerHTML = [0,1,2,3,4].map(i => star(i < n)).join("");
+    s.setAttribute("role", "img"); s.setAttribute("aria-label", `${n} out of 5 stars`);
+  });
+
+  /* ---- pointer tilt (hero photo + licence) ---- */
+  const fine = matchMedia("(pointer: fine)").matches;
+  if (fine && !reduce) {
+    const wrap = $("#photoWrap"), stage = document.querySelector(".stage");
+    stage.addEventListener("pointermove", e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      wrap.style.transform = `translate(${x * 24}px, ${y * 18}px) rotate(${x * 4}deg)`;
+    });
+    stage.addEventListener("pointerleave", () => wrap.style.transform = "");
+    const lic = $("#licence");
+    lic.addEventListener("pointermove", e => {
+      const r = lic.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      lic.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+    });
+    lic.addEventListener("pointerleave", () => lic.style.transform = "");
+  }
+
+  /* ---- lightbox ---- */
+  const cards = [...document.querySelectorAll(".card[data-title]")];
+  const lb = $("#lb"), lbImg = $("#lbImg");
+  let cur = 0;
+  const show = i => {
+    cur = (i + cards.length) % cards.length;
+    const c = cards[cur], img = c.querySelector("img");
+    lbImg.style.animation = "none"; lbImg.offsetHeight; lbImg.style.animation = "";
+    lbImg.src = img.src; lbImg.alt = img.alt;
+    $("#lbCount").textContent = c.querySelector(".tag").textContent + ` · ${cur + 1}/${cards.length}`;
+    $("#lbTitle").textContent = c.dataset.title;
+    $("#lbText").textContent = c.dataset.text;
+  };
+  let opener = null;
+  cards.forEach((c, i) => c.querySelector(".open").addEventListener("click", e => { opener = e.currentTarget; show(i); lb.showModal(); }));
+  $("#lbClose").addEventListener("click", () => lb.close());
+  $("#lbPrev").addEventListener("click", () => show(cur - 1));
+  $("#lbNext").addEventListener("click", () => show(cur + 1));
+  lb.addEventListener("keydown", e => { if (e.key === "ArrowLeft") show(cur - 1); if (e.key === "ArrowRight") show(cur + 1); });
+  lb.addEventListener("click", e => { if (e.target.classList.contains("lb-stage")) lb.close(); });
+  lb.addEventListener("close", () => opener && opener.focus());
+
+  /* ---- copy handle ---- */
+  const toast = $("#toast");
+  let tt;
+  const say = m => { toast.textContent = m; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 2200); };
+  /* ---- sleep clock ---- */
+  const clock = $("#sleepClock");
+  let secs = 1 * 3600 + 32 * 60 + 23;
+  const pad = n => String(n).padStart(2, "0");
+  setInterval(() => { secs++; clock.textContent = `${pad(Math.floor(secs / 3600))}:${pad(Math.floor(secs / 60) % 60)}:${pad(secs % 60)}`; }, 1000);
+
+  const denials = ["Application denied. Still jon.", "Reviewed by a panel of experts. Still jon.", "Applicant fell asleep during the interview.", "Denied. Try again after studying (awake)."];
+  let di = 0;
+  $("#renew").addEventListener("click", () => say(denials[di++ % denials.length]));
+
+  /* ---- Jon-o-meter ---- */
+  const results = [
+    [12, "Certified jon. Congratulations."],
+    [7,  "Meter tried its best. So did Jon."],
+    [19, "Personal best! Still jon."],
+    [3,  "Reading unavailable: brain on airplane mode."],
+    [14, "Stable. Consistently jon."],
+    [-2, "Negative?? We didn't know that was possible."]
+  ];
+  let ri = 0;
+  const bar = $("#bar"), out = $("#readout"), verdict = $("#verdict"), btn = $("#test");
+  btn.addEventListener("click", () => {
+    const [score, text] = results[ri++ % results.length];
+    btn.disabled = true; btn.textContent = "Measuring…"; verdict.textContent = "";
+    bar.style.transition = "none"; bar.style.transform = "scaleX(.9)"; bar.offsetHeight;
+    bar.style.transition = ""; bar.style.transform = `scaleX(${Math.max(score, 1) / 200})`;
+    const dur = reduce ? 0 : 1500, start = performance.now();
+    const tick = now => {
+      const t = dur ? Math.min((now - start) / dur, 1) : 1;
+      out.textContent = t < 1 ? Math.floor(180 * (1 - t) + Math.random() * 20) : score;
+      if (t < 1) requestAnimationFrame(tick);
+      else { verdict.textContent = text; btn.disabled = false; btn.textContent = "Measure again"; }
+    };
+    requestAnimationFrame(tick);
+  });
+})();
+</script>
+</body>
+</html>
